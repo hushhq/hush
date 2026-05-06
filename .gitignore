@@ -1,0 +1,10 @@
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local clones the bootstrap script materializes alongside this repo
+# stay in their own siblings; nothing is checked in here. The umbrella
+# repo only ships docs + scripts.
