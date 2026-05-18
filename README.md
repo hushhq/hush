@@ -25,6 +25,12 @@ This repository is the **umbrella entry point** for the project: vision, archite
 
 ## Architecture
 
+The cross-repository product contract lives in
+[`docs/CORE-INVARIANTS.md`](./docs/CORE-INVARIANTS.md). Before changing auth,
+vault, device linking, MLS, messaging, voice, identity labels, desktop runtime,
+deploy, or release flows, agents and maintainers must identify the impacted
+invariants and run the targeted checks listed there.
+
 ```
                      ┌──────────────────────┐
                      │     hush-web (PWA)   │  React + Vite + WASM
