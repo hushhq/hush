@@ -56,6 +56,10 @@ Never break:
 - no PIN-unlock path that can reactivate a server-revoked device from local vault state alone;
 - no conflation of logout, session expiration, and device revoke. They are separate lifecycle transitions with separate persistence rules;
 - no device-list UI that treats stale local cache as authoritative after link, logout, revoke, or recovery;
+- no device registration path without a human-readable device label. Sign-up,
+  challenge verification/recovery, and device-link approval must all supply the
+  label. The server may backfill a missing row with that label, but must not
+  overwrite an already-certified device row during `/verify`;
 - no device-link endpoint that can return the SPA HTML fallback where JSON is required;
 - no reset of PIN failure counters or vault lock deadlines on refresh;
 - no device-link export route that trusts untrusted claim URLs for bearer-token requests.
@@ -69,6 +73,8 @@ Required verification when touched:
 - revoke device B from device A, then confirm device B cannot PIN-unlock back into the account;
 - logout from one device and confirm the authorized-device list converges without manual reload;
 - linked and non-linked device rows show stable human device labels or an explicit, bounded fallback;
+- challenge verification/recovery-created device rows show the submitted human
+  label and do not rewrite labels on existing certified devices;
 - cross-tab logout and server-session invalidation.
 
 ### MLS, Messages, and Realtime Catch-up
