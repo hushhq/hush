@@ -66,6 +66,8 @@ Implemented now:
 - TanStack Query ownership for the settings device list, active-server member
   list, active-server channel list, and background-server text-channel id
   resolver;
+- local client diagnostics for API boundary failures, including redacted
+  non-JSON and invalid-JSON response previews;
 - the first auth/device lifecycle planner for revoked-device tombstones and
   invalidated-session transitions.
 
@@ -99,7 +101,8 @@ Not yet implemented:
 4. Add Playwright two-device smoke tests for revoke, device link, invite join,
    and identity labels.
 5. Add structured telemetry for auth, device link, WS reconnect, MLS catch-up,
-   and desktop updater transitions.
+   and desktop updater transitions. API JSON boundary failures now emit local
+   diagnostics; the remaining domains still need typed diagnostic coverage.
 6. Introduce Zustand only where a client-owned store removes prop drilling or
    duplicated UI state. Do not use it as a server cache.
 
