@@ -55,9 +55,10 @@ state, realtime state, and local encrypted state cannot drift silently.
 12. Auth-owned TanStack Query roots must be removed when an auth boundary is
     crossed: logout, revoked-device teardown, and server-session invalidation.
     Query key scoping is not a substitute for lifecycle invalidation.
-13. Diagnostic previews must be redacted before dispatch. Field names matching
-    `token`, `secret`, `cipher*`, `key`, or `session*` are sensitive even when
-    the value is not JWT-shaped.
+13. Diagnostic previews must be redacted before dispatch. Sensitive field
+    tokens include auth headers, bearer values, cookies, credentials, keys,
+    MACs, nonces, OTPs, passwords, PINs, secrets, sessions, signatures,
+    tokens, and cipher-prefixed fields, even when the value is not JWT-shaped.
 
 ## Current Coverage
 
