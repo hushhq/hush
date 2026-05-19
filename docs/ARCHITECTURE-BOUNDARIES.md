@@ -91,6 +91,9 @@ Implemented now:
 - local client diagnostics for API boundary failures, including redacted
   non-JSON and invalid-JSON response previews. Dispatch currently targets the
   browser window event surface and no-ops outside that context;
+- status-bearing HTTP errors for the covered auth and device-management API
+  helpers, so lifecycle callers can distinguish HTTP failures from local parse,
+  crypto, or vault failures;
 - auth/device lifecycle planners for revoked-device tombstones,
   invalidated-session transitions, PIN unlock attempts, local vault locks,
   PIN-failure wipe decisions, local auth resets, and startup vault-state
