@@ -91,10 +91,11 @@ Implemented now:
 - local client diagnostics for API boundary failures, including redacted
   non-JSON and invalid-JSON response previews. Dispatch currently targets the
   browser window event surface and no-ops outside that context;
-- the first auth/device lifecycle planner for revoked-device tombstones and
-  invalidated-session transitions. PIN unlock attempts now check the lifecycle
-  planner before vault decrypt or challenge-response, so a revoked-device
-  tombstone cannot become a PIN-resumable session.
+- auth/device lifecycle planners for revoked-device tombstones,
+  invalidated-session transitions, PIN unlock attempts, local vault locks,
+  PIN-failure wipe decisions, and local auth resets. PIN unlock attempts now
+  check the lifecycle planner before vault decrypt or challenge-response, so a
+  revoked-device tombstone cannot become a PIN-resumable session.
 
 Not yet implemented:
 
@@ -126,9 +127,9 @@ Not yet implemented:
    a schema before consumer integration. Server broadcast shape changes and
    client schema changes must land in the same review cycle.
 4. Extract auth/device lifecycle transitions from the main auth hook into a
-   small testable module. The first lifecycle planner now covers only
-   revoked-device tombstones, invalidated-session transitions, and local vault
-   unlock attempts under a revoked-device tombstone; most side effects and most
+   small testable module. Current lifecycle planners cover revoked-device
+   tombstones, invalidated-session transitions, local vault unlock attempts,
+   local vault locks, PIN-failure wipe decisions, and local auth resets. Most
    boot decisions still live in `useAuth` and must be moved behind named
    lifecycle actions.
 5. Add Playwright two-device smoke tests for revoke, device link, invite join,
