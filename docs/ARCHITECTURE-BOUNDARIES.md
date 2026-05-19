@@ -129,7 +129,10 @@ Not yet implemented:
    device-key server-state hook, the active-server member list, the
    active-server channel list, and the background-server text-channel id
    resolver. Logout, revoked-device teardown, and server-session invalidation
-   now clear auth-owned query roots; remaining server-backed surfaces must
+   now clear auth-owned query roots; non-React lifecycle code that mutates
+   `/api/auth/devices` outside the component-bound hooks (recovery's bulk
+   revoke) invalidates the same boundary through the shared
+   `invalidateDeviceKeysQueries` helper. Remaining server-backed surfaces must
    follow the same query-key and invalidation model.
 2.1. Keep auth-instance token resolution behind a shared hook. Initial coverage
    exists for settings device management and embedded device-link approval. New
