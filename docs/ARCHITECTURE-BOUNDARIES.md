@@ -47,9 +47,34 @@ state, realtime state, and local encrypted state cannot drift silently.
 10. Device-link and archive-transfer payloads are security-sensitive runtime
     contracts. Every successful response in those flows must pass a runtime
     schema before crypto, vault, archive import, or auth-state mutation runs.
+    Security-sensitive ready/manifest payloads should reject unexpected fields
+    unless there is an explicit compatibility reason not to.
 11. A persisted `device_revoked` invalidation is a local tombstone. Startup must
     never reinterpret leftover IndexedDB vault data as a recoverable PIN flow
     while that tombstone exists. It must wipe again and remain unauthenticated.
+
+## Current Coverage
+
+Implemented now:
+
+- strict JSON parsing for the touched device-link and archive-transfer HTTP
+  success responses;
+- runtime schemas for device-link request, resolve, result, archive init,
+  archive transfer windows, finalize missing-list responses, and archive
+  manifests;
+- strict schemas for device-link ready results and archive manifests;
+- the first auth/device lifecycle planner for revoked-device tombstones and
+  invalidated-session transitions.
+
+Not yet implemented:
+
+- runtime schema coverage for WebSocket messages;
+- runtime schema coverage for desktop IPC messages;
+- runtime schema coverage for the full device-link import bundle;
+- a complete auth/device lifecycle state machine covering all boot, unlock,
+  lock, recovery, logout, and revoke transitions;
+- Playwright two-device smoke tests for revoke, device link, invite join, and
+  identity labels.
 
 ## Implementation Order
 
@@ -60,9 +85,10 @@ state, realtime state, and local encrypted state cannot drift silently.
 2. Migrate device list and member list reads to TanStack Query with explicit
    invalidation on link, revoke, logout, and membership events.
 3. Extract auth/device lifecycle transitions from the main auth hook into a
-   small testable module. The first lifecycle planner now covers revoked-device
-   tombstones and invalidated-session transitions; the remaining work is moving
-   more boot and vault decisions behind the same module boundary.
+   small testable module. The first lifecycle planner now covers only
+   revoked-device tombstones and invalidated-session transitions; most side
+   effects and most boot decisions still live in `useAuth` and must be moved
+   behind named lifecycle actions.
 4. Add Playwright two-device smoke tests for revoke, device link, invite join,
    and identity labels.
 5. Add structured telemetry for auth, device link, WS reconnect, MLS catch-up,
