@@ -52,6 +52,10 @@ state, realtime state, and local encrypted state cannot drift silently.
     schema before crypto, vault, archive import, or auth-state mutation runs.
     Security-sensitive ready/manifest payloads should reject unexpected fields
     unless there is an explicit compatibility reason not to.
+    Strict device-link producer and consumer changes must ship together: adding
+    a bundle field requires updating the encoder, decoder schema, and tests in
+    the same review cycle. Legacy inline snapshots are accepted only as object
+    payloads; chunked archive payloads remain the preferred transfer surface.
 11. A persisted `device_revoked` invalidation is a local tombstone. Startup must
     never reinterpret leftover IndexedDB vault data as a recoverable PIN flow
     while that tombstone exists. It must wipe again and remain unauthenticated.
