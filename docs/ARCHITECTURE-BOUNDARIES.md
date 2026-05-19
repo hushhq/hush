@@ -161,6 +161,37 @@ Not yet implemented:
 7. Introduce Zustand only where a client-owned store removes prop drilling or
    duplicated UI state. Do not use it as a server cache.
 
+## Persisted Vault Wipe Policy
+
+Each path that touches local identity material lands on one row. Rows must
+stay distinct — a soft invalidation must not delete the vault, and a
+destructive path must not leave a recoverable PIN-resumable state behind.
+
+| Trigger | Vault marker | Vault IDB | Transcript IDB | Session key store | Auth-owned queries | React auth state |
+|-|-|-|-|-|-|-|
+| `device_revoked` | delete | delete | delete | clear | clear | reset to `none` |
+| `server_session_invalid` | preserve | preserve | preserve (in-memory cache cleared) | preserve | clear | reset to `locked` if marker present, else `none` |
+| `performLogout` | delete | delete | delete | clear | clear | reset to `none` |
+| max PIN failures | delete | delete | preserve (rows are inert ciphertext post-wipe) | preserve | preserve | reset to `none` |
+| Cross-tab `hush_logout` broadcast | preserve | preserve | preserve | preserve | clear | reset to `none` |
+| Manual `lockVault` / vault timeout | preserve | preserve | preserve (in-memory cache cleared) | clear | preserve | `locked` |
+| No-token boot with persisted `device_revoked` | delete | delete | delete | clear | clear | reset to `none` |
+| No-token boot with persisted `server_session_invalid` | preserve | preserve | preserve | preserve | preserve | `locked` if marker present, else `none` |
+
+Rules:
+
+- Revocation is sticky. Once a `device_revoked` tombstone is written, no
+  later `markServerSessionInvalidated` call can downgrade it to
+  `server_session_invalid`.
+- Broadcast logout is a per-tab session reset, not a vault wipe. Other tabs
+  in the same browser still hold the encrypted vault and can re-enter PIN.
+- Max PIN failures is a brute-force protection path: the encrypted vault
+  blob is destroyed so guessing cannot continue, but already-encrypted
+  transcript rows are inert without the vault key and are left in place.
+- Manual lock and vault timeout do not touch persisted material; they only
+  drop the in-memory derived key and the cross-reload session key store so
+  the next reload requires PIN.
+
 ## Review Gate
 
 Every PR touching auth, devices, invites, members, voice, MLS, or desktop
