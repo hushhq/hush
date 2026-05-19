@@ -93,7 +93,8 @@ Implemented now:
   browser window event surface and no-ops outside that context;
 - auth/device lifecycle planners for revoked-device tombstones,
   invalidated-session transitions, PIN unlock attempts, local vault locks,
-  PIN-failure wipe decisions, and local auth resets. PIN unlock attempts now
+  PIN-failure wipe decisions, local auth resets, and startup vault-state
+  decisions for no-token and authenticated boot paths. PIN unlock attempts now
   check the lifecycle planner before vault decrypt or challenge-response, so a
   revoked-device tombstone cannot become a PIN-resumable session.
 
@@ -129,9 +130,10 @@ Not yet implemented:
 4. Extract auth/device lifecycle transitions from the main auth hook into a
    small testable module. Current lifecycle planners cover revoked-device
    tombstones, invalidated-session transitions, local vault unlock attempts,
-   local vault locks, PIN-failure wipe decisions, and local auth resets. Most
-   boot decisions still live in `useAuth` and must be moved behind named
-   lifecycle actions.
+   local vault locks, PIN-failure wipe decisions, local auth resets, no-token
+   local vault boot, authenticated vault boot, and authenticated session fetch
+   failure. Auto-unlock side effects and IndexedDB scanning still live in
+   `useAuth` and must stay there unless they are moved into dedicated services.
 5. Add Playwright two-device smoke tests for revoke, device link, invite join,
    and identity labels.
 6. Add structured telemetry for auth, device link, WS reconnect, MLS catch-up,
