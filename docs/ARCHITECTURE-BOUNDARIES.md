@@ -31,6 +31,9 @@ state, realtime state, and local encrypted state cannot drift silently.
    normal logout are not.
 5. Runtime schemas must guard API, WebSocket, desktop IPC, and device-link
    bundle boundaries. TypeScript types alone are insufficient at runtime.
+   Every server-sourced `wsClient.on(type, ...)` subscription must have a
+   matching inbound WebSocket schema entry before the consumer ships. Transport
+   events emitted locally by the client are the only exception.
 6. Cross-device behavior needs executable tests. Any change to auth, device
    linking, roster identity, invites, or voice key flow must add or update a
    Playwright smoke where a browser-only unit test cannot catch the failure.
@@ -78,7 +81,8 @@ Implemented now:
   roster WS cache convergence is still future work;
 - runtime schema coverage for known inbound WebSocket messages at the transport
   boundary, with forward-compatible pass-through for unknown typed frames and
-  redacted diagnostics for malformed known frames;
+  redacted diagnostics for malformed known frames. Tests assert that every
+  server-sourced `wsClient.on(...)` consumer has a schema entry;
 - local client diagnostics for API boundary failures, including redacted
   non-JSON and invalid-JSON response previews. Dispatch currently targets the
   browser window event surface and no-ops outside that context;
@@ -111,7 +115,8 @@ Not yet implemented:
 3. Add runtime schemas for inbound WebSocket messages at the transport boundary.
    Initial coverage exists for known app, moderation, channel, MLS, voice,
    presence, transparency, and instance-ban frames. New WS event types must add
-   a schema before consumer integration.
+   a schema before consumer integration. Server broadcast shape changes and
+   client schema changes must land in the same review cycle.
 4. Extract auth/device lifecycle transitions from the main auth hook into a
    small testable module. The first lifecycle planner now covers only
    revoked-device tombstones and invalidated-session transitions; most side
@@ -122,7 +127,9 @@ Not yet implemented:
 6. Add structured telemetry for auth, device link, WS reconnect, MLS catch-up,
    and desktop updater transitions. API JSON boundary failures now emit local
    diagnostics, and invalid WS frames now emit local diagnostics; the remaining
-   domains still need typed diagnostic coverage.
+   domains still need typed diagnostic coverage. Invalid-frame diagnostics carry
+   Zod issue codes and redacted previews; sensitive field names in issue paths
+   may be redacted intentionally.
 7. Introduce Zustand only where a client-owned store removes prop drilling or
    duplicated UI state. Do not use it as a server cache.
 
