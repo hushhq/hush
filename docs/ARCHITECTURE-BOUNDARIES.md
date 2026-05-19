@@ -96,7 +96,10 @@ Implemented now:
   PIN-failure wipe decisions, local auth resets, and startup vault-state
   decisions for no-token and authenticated boot paths. PIN unlock attempts now
   check the lifecycle planner before vault decrypt or challenge-response, so a
-  revoked-device tombstone cannot become a PIN-resumable session.
+  revoked-device tombstone cannot become a PIN-resumable session;
+- shared home-instance session resolution for settings device management and
+  embedded device-link approval, keeping namespaced home-instance token lookup
+  out of UI components.
 
 Not yet implemented:
 
@@ -123,6 +126,10 @@ Not yet implemented:
    resolver. Logout, revoked-device teardown, and server-session invalidation
    now clear auth-owned query roots; remaining server-backed surfaces must
    follow the same query-key and invalidation model.
+2.1. Keep auth-instance token resolution behind a shared hook. Initial coverage
+   exists for settings device management and embedded device-link approval. New
+   home-instance API callers must use the shared resolver instead of calling
+   `getInstanceToken` directly from UI components.
 3. Add runtime schemas for inbound WebSocket messages at the transport boundary.
    Initial coverage exists for known app, moderation, channel, MLS, voice,
    presence, transparency, and instance-ban frames. New WS event types must add
