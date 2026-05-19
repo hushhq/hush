@@ -78,10 +78,10 @@ Implemented now:
   manifests;
 - strict schemas for device-link ready results, QR payloads, import bundles,
   import-bundle archive descriptors, and archive manifests;
-- TanStack Query ownership for the settings device list, active-server member
-  list, active-server channel list, and background-server text-channel id
-  resolver, with auth-owned query cache removal on logout, revoked-device
-  teardown, and server-session invalidation;
+- TanStack Query ownership for settings device-list reads and revoke
+  invalidation, active-server member list, active-server channel list, and
+  background-server text-channel id resolver, with auth-owned query cache
+  removal on logout, revoked-device teardown, and server-session invalidation;
 - active-server member lists refetch explicitly on membership events; direct
   roster WS cache convergence is still future work;
 - runtime schema coverage for known inbound WebSocket messages at the transport
@@ -117,7 +117,8 @@ Not yet implemented:
    same boundary pattern before UI integration.
 2. Migrate device list and member list reads to TanStack Query with explicit
    invalidation on link, revoke, logout, and membership events. Initial coverage
-   exists for settings devices, the active-server member list, the
+   exists for settings devices, including revoke invalidation through the
+   device-key server-state hook, the active-server member list, the
    active-server channel list, and the background-server text-channel id
    resolver. Logout, revoked-device teardown, and server-session invalidation
    now clear auth-owned query roots; remaining server-backed surfaces must
