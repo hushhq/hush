@@ -87,7 +87,9 @@ Implemented now:
   non-JSON and invalid-JSON response previews. Dispatch currently targets the
   browser window event surface and no-ops outside that context;
 - the first auth/device lifecycle planner for revoked-device tombstones and
-  invalidated-session transitions.
+  invalidated-session transitions. PIN unlock attempts now check the lifecycle
+  planner before vault decrypt or challenge-response, so a revoked-device
+  tombstone cannot become a PIN-resumable session.
 
 Not yet implemented:
 
@@ -119,9 +121,10 @@ Not yet implemented:
    client schema changes must land in the same review cycle.
 4. Extract auth/device lifecycle transitions from the main auth hook into a
    small testable module. The first lifecycle planner now covers only
-   revoked-device tombstones and invalidated-session transitions; most side
-   effects and most boot decisions still live in `useAuth` and must be moved
-   behind named lifecycle actions.
+   revoked-device tombstones, invalidated-session transitions, and local vault
+   unlock attempts under a revoked-device tombstone; most side effects and most
+   boot decisions still live in `useAuth` and must be moved behind named
+   lifecycle actions.
 5. Add Playwright two-device smoke tests for revoke, device link, invite join,
    and identity labels.
 6. Add structured telemetry for auth, device link, WS reconnect, MLS catch-up,
