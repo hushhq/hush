@@ -52,6 +52,12 @@ state, realtime state, and local encrypted state cannot drift silently.
 11. A persisted `device_revoked` invalidation is a local tombstone. Startup must
     never reinterpret leftover IndexedDB vault data as a recoverable PIN flow
     while that tombstone exists. It must wipe again and remain unauthenticated.
+12. Auth-owned TanStack Query roots must be removed when an auth boundary is
+    crossed: logout, revoked-device teardown, and server-session invalidation.
+    Query key scoping is not a substitute for lifecycle invalidation.
+13. Diagnostic previews must be redacted before dispatch. Field names matching
+    `token`, `secret`, `cipher*`, `key`, or `session*` are sensitive even when
+    the value is not JWT-shaped.
 
 ## Current Coverage
 
@@ -65,9 +71,13 @@ Implemented now:
 - strict schemas for device-link ready results and archive manifests;
 - TanStack Query ownership for the settings device list, active-server member
   list, active-server channel list, and background-server text-channel id
-  resolver;
+  resolver, with auth-owned query cache removal on logout, revoked-device
+  teardown, and server-session invalidation;
+- active-server member lists refetch explicitly on membership events; direct
+  roster WS cache convergence is still future work;
 - local client diagnostics for API boundary failures, including redacted
-  non-JSON and invalid-JSON response previews;
+  non-JSON and invalid-JSON response previews. Dispatch currently targets the
+  browser window event surface and no-ops outside that context;
 - the first auth/device lifecycle planner for revoked-device tombstones and
   invalidated-session transitions.
 
@@ -76,6 +86,7 @@ Not yet implemented:
 - runtime schema coverage for WebSocket messages;
 - runtime schema coverage for desktop IPC messages;
 - runtime schema coverage for the full device-link import bundle;
+- WS-driven cache convergence for member roster mutations;
 - a complete auth/device lifecycle state machine covering all boot, unlock,
   lock, recovery, logout, and revoke transitions;
 - Playwright two-device smoke tests for revoke, device link, invite join, and
@@ -91,8 +102,9 @@ Not yet implemented:
    invalidation on link, revoke, logout, and membership events. Initial coverage
    exists for settings devices, the active-server member list, the
    active-server channel list, and the background-server text-channel id
-   resolver; remaining server-backed surfaces must follow the same query-key
-   and invalidation model.
+   resolver. Logout, revoked-device teardown, and server-session invalidation
+   now clear auth-owned query roots; remaining server-backed surfaces must
+   follow the same query-key and invalidation model.
 3. Extract auth/device lifecycle transitions from the main auth hook into a
    small testable module. The first lifecycle planner now covers only
    revoked-device tombstones and invalidated-session transitions; most side
