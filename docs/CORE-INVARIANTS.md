@@ -375,7 +375,7 @@ Required verification when touched:
 - no auth/vault/MLS stores are cleared;
 - desktop `app://` path does not attempt unsupported service worker registration.
 
-Known guardrail:
+Known boundary:
 
 - `hush-web/src/lib/pwaUpdate.ts` must continue to skip service worker
   registration for desktop renderers via the `isDesktopRenderer()` check. That

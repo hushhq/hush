@@ -1,9 +1,9 @@
-# Hush Architecture Guardrails
+# Hush Architecture Boundaries
 
-This document defines the engineering guardrails we will add around the core
-product invariants. The goal is not to add fashionable libraries. The goal is
-to make ownership boundaries explicit enough that auth, device state, realtime
-state, and local encrypted state cannot drift silently.
+This document defines the state ownership boundaries and runtime contracts that
+protect Hush's core product invariants. The goal is not to add fashionable
+libraries. The goal is to make ownership explicit enough that auth, device
+state, realtime state, and local encrypted state cannot drift silently.
 
 ## State Ownership
 
@@ -14,7 +14,7 @@ state, and local encrypted state cannot drift silently.
 | Auth/device lifecycle | Explicit lifecycle module | Reducer or state machine | Login, lock, logout, session expiry, revoke, and recovery are distinct transitions. |
 | Encrypted local data | Vault/MLS/transcript services | Dedicated storage services | No UI component owns vault, MLS, or transcript persistence directly. |
 | Boundary payloads | API/WS/IPC boundary | Zod or equivalent schemas | Untrusted payloads are parsed before business logic consumes them. |
-| Failures and telemetry | Error/diagnostic layer | Structured logging + telemetry | Expected states and corruption states must be distinguishable. |
+| Failures and telemetry | Error/diagnostic layer | Structured logging plus telemetry | Expected states and corruption states must be distinguishable. |
 
 ## Mandatory Rules
 
@@ -39,14 +39,30 @@ state, and local encrypted state cannot drift silently.
 8. Errors must carry category, operation, instance origin, and recoverability.
    The UI can simplify the text, but diagnostics must retain the structured
    cause.
+9. Successful API responses must never be parsed with best-effort JSON
+   fallbacks. A 2xx response with HTML, empty text, or malformed JSON is an API
+   boundary failure and must surface as a typed diagnostic. Best-effort JSON
+   parsing is allowed only for non-2xx error bodies where the HTTP status
+   remains the source of truth.
+10. Device-link and archive-transfer payloads are security-sensitive runtime
+    contracts. Every successful response in those flows must pass a runtime
+    schema before crypto, vault, archive import, or auth-state mutation runs.
+11. A persisted `device_revoked` invalidation is a local tombstone. Startup must
+    never reinterpret leftover IndexedDB vault data as a recoverable PIN flow
+    while that tombstone exists. It must wipe again and remain unauthenticated.
 
 ## Implementation Order
 
 1. Add runtime schemas for auth/device API responses and device-link payloads.
+   Initial coverage exists for device-link request/resolve/result and
+   archive-transfer init/window/finalize/manifest responses. New endpoints must
+   follow the same boundary pattern before UI integration.
 2. Migrate device list and member list reads to TanStack Query with explicit
    invalidation on link, revoke, logout, and membership events.
 3. Extract auth/device lifecycle transitions from the main auth hook into a
-   small testable module.
+   small testable module. The first lifecycle planner now covers revoked-device
+   tombstones and invalidated-session transitions; the remaining work is moving
+   more boot and vault decisions behind the same module boundary.
 4. Add Playwright two-device smoke tests for revoke, device link, invite join,
    and identity labels.
 5. Add structured telemetry for auth, device link, WS reconnect, MLS catch-up,
