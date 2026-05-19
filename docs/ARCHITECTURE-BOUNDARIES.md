@@ -76,6 +76,9 @@ Implemented now:
   teardown, and server-session invalidation;
 - active-server member lists refetch explicitly on membership events; direct
   roster WS cache convergence is still future work;
+- runtime schema coverage for known inbound WebSocket messages at the transport
+  boundary, with forward-compatible pass-through for unknown typed frames and
+  redacted diagnostics for malformed known frames;
 - local client diagnostics for API boundary failures, including redacted
   non-JSON and invalid-JSON response previews. Dispatch currently targets the
   browser window event surface and no-ops outside that context;
@@ -84,7 +87,6 @@ Implemented now:
 
 Not yet implemented:
 
-- runtime schema coverage for WebSocket messages;
 - runtime schema coverage for desktop IPC messages;
 - runtime schema coverage for the full device-link import bundle;
 - WS-driven cache convergence for member roster mutations;
@@ -106,17 +108,22 @@ Not yet implemented:
    resolver. Logout, revoked-device teardown, and server-session invalidation
    now clear auth-owned query roots; remaining server-backed surfaces must
    follow the same query-key and invalidation model.
-3. Extract auth/device lifecycle transitions from the main auth hook into a
+3. Add runtime schemas for inbound WebSocket messages at the transport boundary.
+   Initial coverage exists for known app, moderation, channel, MLS, voice,
+   presence, transparency, and instance-ban frames. New WS event types must add
+   a schema before consumer integration.
+4. Extract auth/device lifecycle transitions from the main auth hook into a
    small testable module. The first lifecycle planner now covers only
    revoked-device tombstones and invalidated-session transitions; most side
    effects and most boot decisions still live in `useAuth` and must be moved
    behind named lifecycle actions.
-4. Add Playwright two-device smoke tests for revoke, device link, invite join,
+5. Add Playwright two-device smoke tests for revoke, device link, invite join,
    and identity labels.
-5. Add structured telemetry for auth, device link, WS reconnect, MLS catch-up,
+6. Add structured telemetry for auth, device link, WS reconnect, MLS catch-up,
    and desktop updater transitions. API JSON boundary failures now emit local
-   diagnostics; the remaining domains still need typed diagnostic coverage.
-6. Introduce Zustand only where a client-owned store removes prop drilling or
+   diagnostics, and invalid WS frames now emit local diagnostics; the remaining
+   domains still need typed diagnostic coverage.
+7. Introduce Zustand only where a client-owned store removes prop drilling or
    duplicated UI state. Do not use it as a server cache.
 
 ## Review Gate
