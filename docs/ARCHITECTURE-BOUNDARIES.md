@@ -72,7 +72,8 @@ Implemented now:
 - runtime schemas for device-link request, resolve, result, archive init,
   archive transfer windows, finalize missing-list responses, and archive
   manifests;
-- strict schemas for device-link ready results and archive manifests;
+- strict schemas for device-link ready results, QR payloads, import bundles,
+  import-bundle archive descriptors, and archive manifests;
 - TanStack Query ownership for the settings device list, active-server member
   list, active-server channel list, and background-server text-channel id
   resolver, with auth-owned query cache removal on logout, revoked-device
@@ -94,7 +95,6 @@ Implemented now:
 Not yet implemented:
 
 - runtime schema coverage for desktop IPC messages;
-- runtime schema coverage for the full device-link import bundle;
 - WS-driven cache convergence for member roster mutations;
 - a complete auth/device lifecycle state machine covering all boot, unlock,
   lock, recovery, logout, and revoke transitions;
@@ -105,8 +105,10 @@ Not yet implemented:
 
 1. Add runtime schemas for auth/device API responses and device-link payloads.
    Initial coverage exists for device-link request/resolve/result and
-   archive-transfer init/window/finalize/manifest responses. New endpoints must
-   follow the same boundary pattern before UI integration.
+   archive-transfer init/window/finalize/manifest responses. Device-link QR
+   payloads and import bundles are also schema-validated before crypto, archive
+   import, vault writes, or auth-state mutation. New endpoints must follow the
+   same boundary pattern before UI integration.
 2. Migrate device list and member list reads to TanStack Query with explicit
    invalidation on link, revoke, logout, and membership events. Initial coverage
    exists for settings devices, the active-server member list, the
