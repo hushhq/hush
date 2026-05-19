@@ -31,9 +31,9 @@ vault, device linking, MLS, messaging, voice, identity labels, desktop runtime,
 deploy, or release flows, agents and maintainers must identify the impacted
 invariants and run the targeted checks listed there.
 
-The implementation guardrails for state ownership, TanStack Query adoption,
+The implementation boundaries for state ownership, TanStack Query adoption,
 runtime schemas, cross-device tests, and telemetry live in
-[`docs/ARCHITECTURE-GUARDRAILS.md`](./docs/ARCHITECTURE-GUARDRAILS.md).
+[`docs/ARCHITECTURE-BOUNDARIES.md`](./docs/ARCHITECTURE-BOUNDARIES.md).
 
 ```
                      ┌──────────────────────┐
