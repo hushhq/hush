@@ -71,8 +71,8 @@ state, realtime state, and local encrypted state cannot drift silently.
 
 Implemented now:
 
-- strict JSON parsing for the touched device-link and archive-transfer HTTP
-  success responses;
+- strict JSON parsing for the touched device-list, device-link, and
+  archive-transfer HTTP success responses;
 - runtime schemas for device-link request, resolve, result, archive init,
   archive transfer windows, finalize missing-list responses, and archive
   manifests;
@@ -113,11 +113,12 @@ Not yet implemented:
 ## Implementation Order
 
 1. Add runtime schemas for auth/device API responses and device-link payloads.
-   Initial coverage exists for device-link request/resolve/result and
-   archive-transfer init/window/finalize/manifest responses. Device-link QR
-   payloads and import bundles are also schema-validated before crypto, archive
-   import, vault writes, or auth-state mutation. New endpoints must follow the
-   same boundary pattern before UI integration.
+   Initial coverage exists for device-list reads, device-link
+   request/resolve/result, and archive-transfer init/window/finalize/manifest
+   responses. Device-link QR payloads and import bundles are also
+   schema-validated before crypto, archive import, vault writes, or auth-state
+   mutation. New endpoints must follow the same boundary pattern before UI
+   integration.
 2. Migrate device list and member list reads to TanStack Query with explicit
    invalidation on link, revoke, logout, and membership events. Initial coverage
    exists for settings devices, including revoke invalidation through the
