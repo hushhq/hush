@@ -63,6 +63,8 @@ Implemented now:
   archive transfer windows, finalize missing-list responses, and archive
   manifests;
 - strict schemas for device-link ready results and archive manifests;
+- TanStack Query ownership for the settings device list and active-server
+  member list;
 - the first auth/device lifecycle planner for revoked-device tombstones and
   invalidated-session transitions.
 
@@ -83,7 +85,9 @@ Not yet implemented:
    archive-transfer init/window/finalize/manifest responses. New endpoints must
    follow the same boundary pattern before UI integration.
 2. Migrate device list and member list reads to TanStack Query with explicit
-   invalidation on link, revoke, logout, and membership events.
+   invalidation on link, revoke, logout, and membership events. Initial coverage
+   exists for settings devices and the active-server member list; remaining
+   server-backed surfaces must follow the same query-key and invalidation model.
 3. Extract auth/device lifecycle transitions from the main auth hook into a
    small testable module. The first lifecycle planner now covers only
    revoked-device tombstones and invalidated-session transitions; most side
