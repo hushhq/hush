@@ -88,9 +88,16 @@ Implemented now:
   boundary, with forward-compatible pass-through for unknown typed frames and
   redacted diagnostics for malformed known frames. Tests assert that every
   server-sourced `wsClient.on(...)` consumer has a schema entry;
-- local client diagnostics for API boundary failures, including redacted
-  non-JSON and invalid-JSON response previews. Dispatch currently targets the
-  browser window event surface and no-ops outside that context;
+- local client diagnostics for API boundary failures: non-JSON response,
+  invalid-JSON response, unreadable response body, runtime-schema rejection
+  (`invalid-response-schema` with structured `issues` paths/codes, no raw
+  payload), WebSocket invalid-JSON frame, WebSocket schema-rejected known
+  frame, WebSocket `auth-invalid-close` (1008 + device-revoked reason), and
+  device-link payload shape/JSON rejection. All events ride the single
+  `hush:diagnostic` window event, are redacted by default (bearer / JWT /
+  token / secret / cipher* / key / session* field-name patterns), and
+  dispatch targets the browser window event surface (no-op outside that
+  context, no persistence, no remote reporting in this tranche);
 - status-bearing HTTP errors for the covered auth and device-management API
   helpers, so lifecycle callers can distinguish HTTP failures from local parse,
   crypto, or vault failures;
