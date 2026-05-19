@@ -71,7 +71,7 @@ state, realtime state, and local encrypted state cannot drift silently.
 
 Implemented now:
 
-- strict JSON parsing for the touched device-list, device-link, and
+- strict JSON parsing for the touched auth, device-list, device-link, and
   archive-transfer HTTP success responses;
 - runtime schemas for device-link request, resolve, result, archive init,
   archive transfer windows, finalize missing-list responses, and archive
@@ -113,7 +113,8 @@ Not yet implemented:
 ## Implementation Order
 
 1. Add runtime schemas for auth/device API responses and device-link payloads.
-   Initial coverage exists for device-list reads, device-link
+   Initial coverage exists for username availability, challenge, verify,
+   register, guest-session, federated-verify, device-list reads, device-link
    request/resolve/result, and archive-transfer init/window/finalize/manifest
    responses. Device-link QR payloads and import bundles are also
    schema-validated before crypto, archive import, vault writes, or auth-state
