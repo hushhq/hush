@@ -1,0 +1,123 @@
+name: Bug report
+description: Report a reproducible problem with Hush.
+title: "[bug] "
+labels: ["triage", "bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Before filing, please
+        confirm that the report does not include any of the following:
+
+        - seed phrases, recovery codes, private keys,
+        - access tokens, JWTs, or session cookies,
+        - decrypted message contents, transcripts, or media,
+        - other users' identifiers without their consent.
+
+        If a screenshot or log would show any of the above, redact it or
+        omit that section entirely. Public issues are not the channel for
+        security-sensitive disclosure. See
+        [docs/TRIAGE.md](https://github.com/hushhq/hush/blob/main/docs/TRIAGE.md)
+        for the private disclosure path.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which surface does this bug affect? Pick `Not sure / cross-cutting` if you can't tell.
+      options:
+        - Not sure / cross-cutting
+        - Desktop (hush-desktop)
+        - Web (hush-web)
+        - Server (hush-server)
+        - Crypto / MLS (hush-crypto)
+        - Mobile (hush-mobile)
+        - Directory (hush-directory)
+        - Self-hosting / deploy
+    validations:
+      required: true
+
+  - type: input
+    id: app_version
+    attributes:
+      label: App version
+      description: |
+        For desktop, the version shown in Settings > About. For the web
+        client, the build hash from the footer of the settings dialog (or
+        leave blank if unknown).
+      placeholder: "0.1.30-mvp"
+    validations:
+      required: false
+
+  - type: input
+    id: os_platform
+    attributes:
+      label: Operating system + version
+      placeholder: "macOS 14.5, Windows 11 23H2, Ubuntu 24.04, iOS 17.5..."
+    validations:
+      required: true
+
+  - type: input
+    id: shell
+    attributes:
+      label: Browser or desktop shell
+      description: Browser name + version, or desktop shell (Electron/macOS native/etc.). Skip for server-only bugs.
+      placeholder: "Firefox 128, Chrome 126, Hush Desktop (Electron 34)..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is the bug? One or two sentences is fine.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps that another person can follow on a fresh install.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots (optional)
+      description: |
+        Paste relevant log lines or attach screenshots.
+
+        **Do not paste:** seed phrases, recovery codes, private keys,
+        access tokens, JWTs, session cookies, decrypted message contents,
+        or anyone else's identifiers without consent.
+      render: text
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: secrets_ack
+    attributes:
+      label: Confirmation
+      options:
+        - label: This report does not include seed phrases, recovery codes, private keys, tokens, session cookies, decrypted message contents, or other people's private data.
+          required: true

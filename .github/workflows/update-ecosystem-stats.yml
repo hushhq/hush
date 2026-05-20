@@ -1,0 +1,58 @@
+name: Update ecosystem stats
+
+on:
+  schedule:
+    # Once a day, just after midnight UTC. The GitHub stargazers count
+    # does not move fast enough to need anything tighter, and a daily
+    # cadence keeps the commit log readable.
+    - cron: '17 0 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-ecosystem-stats
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          # The bot pushes back to the same branch; use the default
+          # token so we never need a PAT.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run script unit tests
+        run: node --test scripts/__tests__/update-ecosystem-stats.test.mjs
+
+      - name: Refresh README stats block
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/update-ecosystem-stats.mjs
+
+      - name: Commit and push if README changed
+        env:
+          # `GITHUB_REF_NAME` is set automatically by the runner and is
+          # already shell-safe (refs/heads/<name> stripped to <name>).
+          # Bound through `env:` for clarity rather than interpolation.
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- README.md; then
+            echo "README ecosystem-stats block already up to date."
+            exit 0
+          fi
+          git config user.name "hush-bot"
+          git config user.email "hush-bot@users.noreply.github.com"
+          git add README.md
+          git commit -m "chore(stats): refresh ecosystem stars block"
+          git push origin "HEAD:${TARGET_BRANCH}"

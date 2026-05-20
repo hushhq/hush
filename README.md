@@ -5,7 +5,7 @@
 
 **End-to-end encrypted messaging, voice, and video.**
 
-[Website](https://gethush.live) · [Web app](https://github.com/hushhq/hush-web) · [Server](https://github.com/hushhq/hush-server) · [Crypto](https://github.com/hushhq/hush-crypto) · [Desktop](https://github.com/hushhq/hush-desktop)
+[Website](https://gethush.live) · [Report a bug](https://github.com/hushhq/hush/issues/new/choose) · [Discussions](https://github.com/hushhq/hush/discussions)
 
 </div>
 
@@ -13,15 +13,42 @@
 
 Hush is a self-hostable communication platform built around the **Messaging Layer Security** protocol (RFC 9420). Every message, voice frame, and video frame is encrypted end-to-end on the client. Servers move bytes; they do not read them.
 
-This repository is the **umbrella entry point** for the project: vision, architecture, and a one-command `docker compose` quickstart that wires every public sub-repo together. The actual code lives in the per-component repositories listed below.
+This repository is the **public entry point** for the Hush project:
+
+- **User-facing bug reports and feature requests** are filed here: <https://github.com/hushhq/hush/issues/new/choose>.
+- **Self-hosting and architecture documentation** live here and link out to the component repos for code.
+- **Community discussion** happens in [Discussions](https://github.com/hushhq/hush/discussions).
+- **Ecosystem-wide stats** (combined GitHub stars across every public component repo) are surfaced in [Ecosystem](#ecosystem) below.
+
+The component repositories listed under [Repositories](#repositories) are
+implementation nodes: they exist for code review and source ownership, not
+for end-user triage. If you are unsure where a problem belongs, open the
+issue here and a maintainer will route it.
 
 ## Why Hush
 
 - **Real E2EE for groups.** MLS group keys, forward secrecy, and post-compromise security, not the "encrypted in transit, plaintext on the server" pattern most chat apps ship.
-- **Self-hostable.** A single `docker compose up` brings the stack up locally. Production is the same stack, scaled.
+- **Self-hostable as the trust path.** A single `docker compose up` brings the stack up locally. The hosted instance at [gethush.live](https://gethush.live) runs the same stack. Self-hosting is the way to verify the product end-to-end, not a secondary mode.
 - **Voice + video too.** LiveKit-based SFU with E2EE keys derived from the same MLS group state.
 - **Federation on the roadmap.** Server-to-server federation is in design; today every account lives on a single instance.
 - **Auditable.** Every component is open source under AGPL-3.0.
+
+## Reporting bugs and requesting features
+
+All user-visible bug reports and feature requests belong in this repository:
+
+- **Bug:** <https://github.com/hushhq/hush/issues/new?template=bug_report.yml>
+- **Feature request:** <https://github.com/hushhq/hush/issues/new?template=feature_request.yml>
+
+Component repos (`hush-web`, `hush-server`, `hush-crypto`, `hush-desktop`,
+`hush-mobile`, `hush-directory`) are for implementation work and pull
+requests. Issues opened there should be code-level: regressions reproducible
+against a specific commit, internal refactors, build/CI breakage. User-level
+problems get redirected to this repo.
+
+Public GitHub issues are **not** for security disclosure. See
+[`docs/TRIAGE.md`](./docs/TRIAGE.md) for the disclosure path and for how the
+in-app anonymous bug reporter will hand off to a private tracker.
 
 ## Architecture
 
@@ -61,7 +88,7 @@ runtime schemas, cross-device tests, and telemetry live in
                      └──────────────────────┘
 ```
 
-## Quickstart
+## Self-hosting (the trust path)
 
 > Requires Docker Engine 25+ and Docker Compose v2.
 
@@ -78,13 +105,16 @@ untouched and just brings the stack up again.
 
 When the stack is ready, open `http://localhost:8090` and follow the
 sign-up flow. The first device registered owns the account; further
-devices are added through **Settings → Devices → Link a new device**.
+devices are added through **Settings > Devices > Link a new device**.
 
-For deeper local development (running components from your own
-checkouts, attaching debuggers, mobile simulators), see
-[`docs/local-development.md`](./docs/local-development.md).
+Self-hosting is the recommended way to verify the product end-to-end on
+hardware you control, evaluate the codebase against your own threat model,
+and run Hush inside a closed network.
 
 ## Repositories
+
+Component repositories: code, tests, and PR review live here. User-facing
+triage does not.
 
 | Repo | What it is | Status |
 |-|-|-|
@@ -94,6 +124,31 @@ checkouts, attaching debuggers, mobile simulators), see
 | [`hush-desktop`](https://github.com/hushhq/hush-desktop) | Native desktop app. Electron shell over the web bundle. | Active |
 | [`hush-mobile`](https://github.com/hushhq/hush-mobile) | iOS + Android client. React Native. | Planned |
 | [`hush-directory`](https://github.com/hushhq/hush-directory) | Decentralized guild discovery service. | Planned |
+
+## Ecosystem
+
+GitHub stars are scoped per repository, so this repo's `stargazers_count`
+only reflects the umbrella. The block below is updated by
+[`scripts/update-ecosystem-stats.mjs`](./scripts/update-ecosystem-stats.mjs)
+on a schedule and aggregates stars across every public component repo. Do
+not hand-edit the block. Automation owns it.
+
+<!-- HUSH_ECOSYSTEM_STATS_START -->
+
+**Hush ecosystem stars: 1**
+
+| Repository | Stars |
+|-|-|
+| [`hushhq/hush`](https://github.com/hushhq/hush) | 0 |
+| [`hushhq/hush-crypto`](https://github.com/hushhq/hush-crypto) | 0 |
+| [`hushhq/hush-desktop`](https://github.com/hushhq/hush-desktop) | 0 |
+| [`hushhq/hush-directory`](https://github.com/hushhq/hush-directory) | 0 |
+| [`hushhq/hush-mobile`](https://github.com/hushhq/hush-mobile) | 0 |
+| [`hushhq/hush-server`](https://github.com/hushhq/hush-server) | 0 |
+| [`hushhq/hush-web`](https://github.com/hushhq/hush-web) | 1 |
+
+_Run `node scripts/update-ecosystem-stats.mjs` to refresh._
+<!-- HUSH_ECOSYSTEM_STATS_END -->
 
 ## Security model
 
@@ -108,7 +163,10 @@ For a deeper read, the design notes live in each component's README.
 
 ## Contributing
 
-The project is early. Issues, discussion threads, and well-scoped pull requests are welcome on the per-component repos. For cross-cutting proposals (protocol, federation, architecture), open an issue here.
+The project is early. For cross-cutting proposals (protocol, federation,
+architecture, public docs), open an issue here. For implementation-level
+changes (a regression in `hush-web`, a bug in `hush-server`, a fix to the
+MLS code in `hush-crypto`), open a PR against the component repo.
 
 ## License
 

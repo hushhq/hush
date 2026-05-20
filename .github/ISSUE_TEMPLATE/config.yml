@@ -1,0 +1,19 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/hushhq/hush/discussions
+    about: |
+      Open-ended questions, design discussions, or "is this a bug?" threads
+      go in Discussions. Filing a bug report or feature request without a
+      reproducible problem statement will be redirected here.
+  - name: Security disclosure
+    url: https://github.com/hushhq/hush/security/advisories/new
+    about: |
+      Do not file security issues publicly. The private disclosure path
+      is GitHub private vulnerability reporting for the umbrella repo.
+  - name: Component implementation issues
+    url: https://github.com/hushhq/hush#repositories
+    about: |
+      Code-level regressions tied to a specific commit can be opened in
+      the matching component repository. User-level bug reports belong
+      here, regardless of which client/server they showed up in.

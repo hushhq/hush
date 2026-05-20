@@ -1,0 +1,66 @@
+name: Feature request
+description: Suggest a change or addition to Hush.
+title: "[feature] "
+labels: ["triage", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for product-level proposals. Implementation-only
+        refactors that have no user-visible effect belong as PRs in the
+        relevant component repository, not as feature requests here.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: |
+        What are you trying to do? Who is affected, and how often does
+        this come up? Concrete examples are more useful than abstract
+        framing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: What should Hush do? Describe the user-visible outcome.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface / component
+      options:
+        - Not sure / cross-cutting
+        - Desktop (hush-desktop)
+        - Web (hush-web)
+        - Server (hush-server)
+        - Crypto / MLS (hush-crypto)
+        - Mobile (hush-mobile)
+        - Directory (hush-directory)
+        - Self-hosting / deploy
+        - Docs
+    validations:
+      required: true
+
+  - type: textarea
+    id: privacy
+    attributes:
+      label: Privacy and security considerations
+      description: |
+        What new data, if any, would the feature require the client or
+        the server to see? Could it weaken end-to-end guarantees, leak
+        metadata, or expose new attack surface? If you are not sure,
+        say so. A maintainer will follow up.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered (optional)
+    validations:
+      required: false
