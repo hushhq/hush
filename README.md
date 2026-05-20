@@ -135,7 +135,7 @@ not hand-edit the block. Automation owns it.
 
 <!-- HUSH_ECOSYSTEM_STATS_START -->
 
-**Hush ecosystem stars: 1**
+**Hush ecosystem stars: 0**
 
 | Repository | Stars |
 |-|-|
@@ -145,7 +145,7 @@ not hand-edit the block. Automation owns it.
 | [`hushhq/hush-directory`](https://github.com/hushhq/hush-directory) | 0 |
 | [`hushhq/hush-mobile`](https://github.com/hushhq/hush-mobile) | 0 |
 | [`hushhq/hush-server`](https://github.com/hushhq/hush-server) | 0 |
-| [`hushhq/hush-web`](https://github.com/hushhq/hush-web) | 1 |
+| [`hushhq/hush-web`](https://github.com/hushhq/hush-web) | 0 |
 
 _Run `node scripts/update-ecosystem-stats.mjs` to refresh._
 <!-- HUSH_ECOSYSTEM_STATS_END -->
