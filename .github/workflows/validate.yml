@@ -1,0 +1,41 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate YAML
+        run: |
+          ruby -ryaml -e 'ARGV.each { |file| YAML.load_file(file); puts "ok #{file}" }' \
+            .github/ISSUE_TEMPLATE/*.yml \
+            .github/workflows/*.yml
+
+      - name: Run ecosystem stats tests
+        run: node --test scripts/__tests__/update-ecosystem-stats.test.mjs
+
+      - name: Verify ecosystem stats block
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/update-ecosystem-stats.mjs --check
+
+      - name: Validate local Markdown links
+        run: node scripts/check-doc-links.mjs
