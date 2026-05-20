@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: update-ecosystem-stats
@@ -22,8 +23,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          # The bot pushes back to the same branch; use the default
-          # token so we never need a PAT.
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node
@@ -39,12 +38,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/update-ecosystem-stats.mjs
 
-      - name: Commit and push if README changed
+      - name: Open pull request if README changed
         env:
-          # `GITHUB_REF_NAME` is set automatically by the runner and is
-          # already shell-safe (refs/heads/<name> stripped to <name>).
-          # Bound through `env:` for clarity rather than interpolation.
-          TARGET_BRANCH: ${{ github.ref_name }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STATS_BRANCH: automation/ecosystem-stats
         run: |
           set -euo pipefail
           if git diff --quiet -- README.md; then
@@ -55,4 +52,13 @@ jobs:
           git config user.email "hush-bot@users.noreply.github.com"
           git add README.md
           git commit -m "chore(stats): refresh ecosystem stars block"
-          git push origin "HEAD:${TARGET_BRANCH}"
+          git push --force-with-lease origin "HEAD:${STATS_BRANCH}"
+          if gh pr list --head "${STATS_BRANCH}" --state open --json number --jq '.[0].number' | grep -q '^[0-9]'; then
+            echo "Ecosystem stats pull request already open."
+            exit 0
+          fi
+          gh pr create \
+            --base main \
+            --head "${STATS_BRANCH}" \
+            --title "chore(stats): refresh ecosystem stars block" \
+            --body "Automated update of the README ecosystem stars block."
