@@ -107,6 +107,15 @@ Implemented now:
   decisions for no-token and authenticated boot paths. PIN unlock attempts now
   check the lifecycle planner before vault decrypt or challenge-response, so a
   revoked-device tombstone cannot become a PIN-resumable session;
+- a canonical auth/device/vault lifecycle state set (`booting`,
+  `unauthenticated`, `locked`, `pin_setup_required`, `guest_authorized`,
+  `authorized`, `recovery_required`, `revoked`, `wiping`, `wiped`) exposed by
+  `useAuth` as a single `lifecycle` field, derived by a pure
+  `deriveAuthLifecycle(snapshot)` function that pairs with the existing
+  planners. `useBootController` reads the canonical lifecycle so the
+  authenticated route tree cannot render for revoked, wiping, wiped, or
+  recovery-required states. See
+  [`hush-web/docs/security/auth-device-lifecycle.md`](https://github.com/hushhq/hush-web/blob/main/docs/security/auth-device-lifecycle.md);
 - shared home-instance session resolution for settings device management and
   embedded device-link approval, keeping namespaced home-instance token lookup
   out of UI components.
@@ -115,8 +124,9 @@ Not yet implemented:
 
 - runtime schema coverage for desktop IPC messages;
 - WS-driven cache convergence for member roster mutations;
-- a complete auth/device lifecycle state machine covering all boot, unlock,
-  lock, recovery, logout, and revoke transitions;
+- broader migration of UI components off the legacy auth booleans
+  (`needsUnlock`, `hasSession`, `needsPinSetup`) to the canonical
+  `lifecycle` value;
 - Playwright two-device smoke tests for revoke, device link, invite join, and
   identity labels.
 
