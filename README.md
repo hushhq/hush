@@ -18,7 +18,6 @@ This repository is the **public entry point** for the Hush project:
 - **User-facing bug reports and feature requests** are filed here: <https://github.com/hushhq/hush/issues/new/choose>.
 - **Self-hosting entry points and architecture documentation** live here and link out to the component repos for implementation details.
 - **Community discussion** happens in [Discussions](https://github.com/hushhq/hush/discussions).
-- **Ecosystem-wide stats** (combined GitHub stars across every public component repo) are surfaced in [Ecosystem](#ecosystem) below.
 
 The component repositories listed under [Repositories](#repositories) are
 implementation nodes: they exist for code review and source ownership, not
@@ -161,42 +160,19 @@ runtime schemas, cross-device tests, and telemetry live in
 
 ## Repositories
 
-Component repositories: code, tests, and PR review live here. User-facing
-triage does not.
+Component repositories are organized by ownership boundary. Code, tests, and
+pull request review live in the specific component repo. User-facing triage
+starts here unless the problem is already known to be implementation-level.
 
-| Repo | What it is | Status |
-|-|-|-|
-| [`hush-web`](https://github.com/hushhq/hush-web) | Browser client. React + Vite. Loads the WASM crypto core. | Active |
-| [`hush-server`](https://github.com/hushhq/hush-server) | Backend relay + storage. Go, Postgres, Redis, LiveKit. | Active |
-| [`hush-crypto`](https://github.com/hushhq/hush-crypto) | MLS implementation. Rust + OpenMLS, compiled to WASM. | Active |
-| [`hush-desktop`](https://github.com/hushhq/hush-desktop) | Native desktop app. Electron shell over the web bundle. | Active |
-| [`hush-mobile`](https://github.com/hushhq/hush-mobile) | iOS + Android client. React Native. | Planned |
-| [`hush-directory`](https://github.com/hushhq/hush-directory) | Decentralized guild discovery service. | Planned |
-
-## Ecosystem
-
-GitHub stars are scoped per repository, so this repo's `stargazers_count`
-only reflects the umbrella. The block below is updated by
-[`scripts/update-ecosystem-stats.mjs`](./scripts/update-ecosystem-stats.mjs)
-on a schedule and aggregates stars across every public component repo. Do
-not hand-edit the block. Automation owns it.
-
-<!-- HUSH_ECOSYSTEM_STATS_START -->
-
-**Hush ecosystem stars: 0**
-
-| Repository | Stars |
-|-|-|
-| [`hushhq/hush`](https://github.com/hushhq/hush) | 0 |
-| [`hushhq/hush-crypto`](https://github.com/hushhq/hush-crypto) | 0 |
-| [`hushhq/hush-desktop`](https://github.com/hushhq/hush-desktop) | 0 |
-| [`hushhq/hush-directory`](https://github.com/hushhq/hush-directory) | 0 |
-| [`hushhq/hush-mobile`](https://github.com/hushhq/hush-mobile) | 0 |
-| [`hushhq/hush-server`](https://github.com/hushhq/hush-server) | 0 |
-| [`hushhq/hush-web`](https://github.com/hushhq/hush-web) | 0 |
-
-_Run `node scripts/update-ecosystem-stats.mjs` to refresh._
-<!-- HUSH_ECOSYSTEM_STATS_END -->
+| Area | Repo | What it owns | Status |
+|-|-|-|-|
+| Product entry point | [`hush`](https://github.com/hushhq/hush) | Public triage, architecture docs, self-hosting entry points, and cross-repo project coordination. | Active |
+| Web client | [`hush-web`](https://github.com/hushhq/hush-web) | Browser client. React + Vite. Loads the WASM crypto core. | Active |
+| Desktop client | [`hush-desktop`](https://github.com/hushhq/hush-desktop) | Native desktop app. Electron shell over the web bundle. | Active |
+| Server | [`hush-server`](https://github.com/hushhq/hush-server) | Backend relay, storage, instance administration, Postgres, Redis, and LiveKit integration. | Active |
+| Cryptography | [`hush-crypto`](https://github.com/hushhq/hush-crypto) | MLS group state. Rust + OpenMLS, compiled to WASM for clients. | Active |
+| Mobile client | [`hush-mobile`](https://github.com/hushhq/hush-mobile) | iOS and Android client. React Native. | Planned |
+| Discovery | [`hush-directory`](https://github.com/hushhq/hush-directory) | Decentralized guild discovery and federation-adjacent directory work. | Planned |
 
 ## Security model
 

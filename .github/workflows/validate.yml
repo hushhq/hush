@@ -29,13 +29,5 @@ jobs:
             .github/ISSUE_TEMPLATE/*.yml \
             .github/workflows/*.yml
 
-      - name: Run ecosystem stats tests
-        run: node --test scripts/__tests__/update-ecosystem-stats.test.mjs
-
-      - name: Verify ecosystem stats block
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node scripts/update-ecosystem-stats.mjs --check
-
       - name: Validate local Markdown links
         run: node scripts/check-doc-links.mjs
