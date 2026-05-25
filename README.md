@@ -7,6 +7,8 @@
 
 [Website](https://gethush.live) · [Report a bug](https://github.com/hushhq/hush/issues/new/choose) · [Discussions](https://github.com/hushhq/hush/discussions)
 
+<img src=".github/assets/hush-demo.gif" width="900" alt="Hush desktop app preview" />
+
 </div>
 
 ---
