@@ -68,7 +68,7 @@ What those values mean:
 
 After setup:
 
-1. Open <https://app.gethush.live>.
+1. Open the desktop client, or the webapp at <https://app.gethush.live>.
 2. Add your instance URL, for example `https://chat.example.com`.
 3. Register or sign in against that instance.
 4. Open `https://chat.example.com/admin/` to bootstrap the admin dashboard with the secret printed by setup.
