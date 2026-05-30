@@ -134,30 +134,45 @@ The implementation boundaries for state ownership, TanStack Query adoption,
 runtime schemas, cross-device tests, and telemetry live in
 [`docs/ARCHITECTURE-BOUNDARIES.md`](./docs/ARCHITECTURE-BOUNDARIES.md).
 
-```
-                     ┌──────────────────────┐
-                     │     hush-web (PWA)   │  React + Vite + WASM
-                     │   hush-desktop (Mac, │  Electron shell wrapping
-                     │   Linux, Windows)    │  the same web bundle
-                     │   hush-mobile (RN)   │  React Native (planned)
-                     └──────────┬───────────┘
-                                │
-                       MLS ciphertext over WSS
-                                │
-                     ┌──────────▼───────────┐
-                     │     hush-server      │  Go · Postgres · Redis
-                     │   (relay + storage)  │  + LiveKit SFU adapter
-                     └──────────┬───────────┘
-                                │
-                     ┌──────────▼───────────┐
-                     │     hush-crypto      │  Rust · OpenMLS · WASM
-                     │  (MLS group state)   │  shared by every client
-                     └──────────────────────┘
+Crypto runs on the client, not the server. Every client loads `hush-crypto`
+(OpenMLS compiled to WASM) and encrypts locally; `hush-server` is a blind
+relay that stores and forwards ciphertext without the keys.
 
-                     ┌──────────────────────┐
-                     │    hush-directory    │  Federated guild discovery
-                     │      (planned)       │  opt-in, decentralized
-                     └──────────────────────┘
+```mermaid
+flowchart TB
+    subgraph clients["Clients (encrypt and decrypt locally)"]
+        direction LR
+        web["hush-web<br/>PWA · React + Vite"]
+        desktop["hush-desktop<br/>Electron shell over the web bundle"]
+        mobile["hush-mobile<br/>React Native · planned"]
+        crypto["hush-crypto<br/>Rust · OpenMLS, compiled to WASM<br/>MLS group state, shared by every client"]
+        web -. loads .-> crypto
+        desktop -. loads .-> crypto
+        mobile -. loads .-> crypto
+    end
+
+    subgraph server["hush-server (blind relay · Go)"]
+        api["API + WebSocket gateway<br/>relay · auth · device linking · admin"]
+        pg[("Postgres<br/>messages, members, MLS ciphertext")]
+        redis[("Redis<br/>sessions, presence, rate limits")]
+        obj[("Object storage<br/>MinIO or external S3<br/>attachments, device-link archives")]
+        tlog["Transparency log<br/>Merkle record of device-key changes"]
+        api --> pg
+        api --> redis
+        api --> obj
+        api --> tlog
+    end
+
+    livekit["LiveKit SFU<br/>opaque SRTP; media keys from the MLS exporter secret"]
+    directory["hush-directory<br/>federated guild discovery · planned"]
+
+    clients == "MLS ciphertext over WSS / HTTPS" ==> api
+    clients -- "encrypted voice and video (SRTP)" --> livekit
+    api -- "room tokens, webhooks" --> livekit
+    api -. "opt-in federation" .-> directory
+
+    classDef planned stroke-dasharray: 4 4;
+    class mobile,directory planned;
 ```
 
 ## Repositories
