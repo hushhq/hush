@@ -9,8 +9,13 @@
 
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { dirname, extname, join, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const REPO_ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+// fileURLToPath decodes percent-encoding and drops the file:// scheme; using
+// `new URL(import.meta.url).pathname` directly would leave a path such as
+// ".../hush%20probe" whenever the checkout path contains a space or other
+// reserved character, breaking every filesystem read below.
+const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'build', 'coverage']);
 const MARKDOWN_EXTENSIONS = new Set(['.md', '.markdown']);
 const LINK_PATTERN = /(?<!!)\[[^\]]+\]\(([^)]+)\)/g;
@@ -112,7 +117,11 @@ export async function validateDocs() {
   return errors;
 }
 
-if (process.argv[1] === new URL(import.meta.url).pathname) {
+// Compare as file:// URLs rather than raw paths: process.argv[1] is a decoded
+// filesystem path while import.meta.url is percent-encoded, so a direct string
+// compare silently fails (skipping this block, exiting 0, validating nothing)
+// whenever the path contains a space or other reserved character.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const errors = await validateDocs();
   if (errors.length > 0) {
     for (const error of errors) {
